@@ -1,0 +1,4 @@
+# Star graph
+CREATE (center:STAR)
+FOREACH (x IN range(1,6)| CREATE (leaf:STAR),(center)-[:X]->(leaf))
+RETURN id(center) AS id;
