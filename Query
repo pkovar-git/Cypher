@@ -2,3 +2,16 @@
 CREATE (center:STAR)
 FOREACH (x IN range(1,6)| CREATE (leaf:STAR),(center)-[:X]->(leaf))
 RETURN id(center) AS id;
+
+# Wheel graph
+CREATE (center:Wheel)
+FOREACH (x IN range(1,6)| CREATE (leaf:Wheel { count:x }),(center)-[:X]->(leaf))
+WITH center
+MATCH (large_leaf)<--(center)-->(small_leaf)
+WHERE large_leaf.count = small_leaf.count + 1
+CREATE (small_leaf)-[:X]->(large_leaf)
+WITH center, min(small_leaf.count) AS min, max(large_leaf.count) AS max
+MATCH (first_leaf)<--(center)-->(last_leaf)
+WHERE first_leaf.count = min AND last_leaf.count = max
+CREATE (last_leaf)-[:X]->(first_leaf)
+RETURN id(center) AS id
