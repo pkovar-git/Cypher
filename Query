@@ -15,3 +15,11 @@ MATCH (first_leaf)<--(center)-->(last_leaf)
 WHERE first_leaf.count = min AND last_leaf.count = max
 CREATE (last_leaf)-[:X]->(first_leaf)
 RETURN id(center) AS id
+
+# Complete
+FOREACH (x IN range(1,6)| CREATE (leaf:Complete { count : x }))
+WITH *
+MATCH (leaf1:Complete),(leaf2:Complete)
+WHERE id(leaf1)< id(leaf2)
+CREATE (leaf1)-[:X]->(leaf2);
+
